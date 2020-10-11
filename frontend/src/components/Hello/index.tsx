@@ -6,7 +6,7 @@ interface HelloProps {
 
 function Hello(props: HelloProps) {
   async function fetchHandler() {
-    const response = await fetch("/api/hello");
+    const response = await fetch("/api/v1/hello");
     const data = await response.json();
     const words = await data.join(", ");
     props.dataHandler(words);

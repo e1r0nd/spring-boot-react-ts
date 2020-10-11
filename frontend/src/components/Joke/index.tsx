@@ -6,7 +6,7 @@ interface JokeProps {
 
 function Joke(props: JokeProps) {
   async function fetchHandler() {
-    const response = await fetch("/api/jokes");
+    const response = await fetch("/api/v1/jokes");
     const joke = await response.text();
     props.dataHandler(joke);
   }

@@ -3,6 +3,7 @@ import "./App.css";
 
 import Joke from "./components/Joke";
 import Hello from "./components/Hello";
+import User from './components/User';
 
 function App() {
   const [fetchedData, setFetchedData] = useState("Fetch something...");
@@ -17,6 +18,7 @@ function App() {
         <div>{fetchedData}</div>
         <Joke dataHandler={fetchedDataHandler} />
         <Hello dataHandler={fetchedDataHandler} />
+        <User />
       </header>
     </div>
   );

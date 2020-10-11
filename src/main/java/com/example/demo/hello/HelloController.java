@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.hello;
 
 import java.util.List;
 
@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("api/")
+@RequestMapping("api/v1")
 @RestController
-public class BasicController {
+public class HelloController {
     @GetMapping("hello")
     public List<String> getHelloWorld() {
         return List.of("Hello", "World");
