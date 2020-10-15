@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
     @GetMapping("hello")
     public List<String> getHelloWorld() {
-        return List.of("Hello", "World");
+        return List.of("Hello", "World", "!!");
     }
 
     @GetMapping("jokes")

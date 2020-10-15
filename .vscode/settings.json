@@ -8,5 +8,6 @@
     "java.configuration.updateBuildConfiguration": "interactive",
     "cSpell.words": [
         "Autowired"
-    ]
+    ],
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

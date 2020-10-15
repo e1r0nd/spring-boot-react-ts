@@ -8,17 +8,19 @@
 
 ## Local development
 
+### Start Backend
+
 ```bash
 docker-compose up
-# open http://localhost:9000
+mvn -f pom-dev.xml spring-boot:run
+open http://localhost:8080
+```
 
+### Start Frontend
+
+```bash
 cd frontend
 npm i
-cd ..
-mvn spring-boot:run
-# open http://localhost:8080
-
-cd frontend
 npm start
 open http://localhost:3000
 ```
