@@ -1,10 +1,12 @@
 # Basic Spring Boot REST + React TS
 
+Spring Boot REST API based on Docker Postgres image with React (TypeScript) frontend. Might be published to Heroku.
+
 ## Requirements
 
 - node 12.18.2, npm 6.14.8
 - Java OpenJDK 11.0.8, maven 4
-- Docker
+- Docker & docker-composer
 
 ## Local development
 
@@ -13,7 +15,9 @@
 ```bash
 docker-compose up
 mvn -f pom-dev.xml spring-boot:run
-open http://localhost:8080
+open http://localhost:8080 # API
+open http://localhost:9000 # Adminer
+# Adminer > PostgreSQL : postgres : password : postgres
 ```
 
 ### Start Frontend

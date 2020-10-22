@@ -3,7 +3,7 @@ import "./App.css";
 
 import Joke from "./components/Joke";
 import Hello from "./components/Hello";
-import User from './components/User';
+import User from "./components/User";
 
 function App() {
   const [fetchedData, setFetchedData] = useState("Fetch something...");
