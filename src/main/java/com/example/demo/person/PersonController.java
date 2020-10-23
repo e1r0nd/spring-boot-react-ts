@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,6 +65,13 @@ public class PersonController {
     public ResponseEntity<Object> createPerson(@RequestParam Map<String, String> person) {
         logger.info("Request for creation: {}", person);
 
-        return service.addOrUpdatePerson(person);
+        return service.addPerson(person);
+    }
+
+    @PutMapping(value = "/", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<Object> patchPerson(@RequestParam Map<String, String> person) {
+        logger.info("Request for update: {}", person);
+
+        return service.updatePerson(person);
     }
 }

@@ -29,8 +29,7 @@ public class PersonService {
         return new ResponseEntity<>(person.get(), new HttpHeaders(), HttpStatus.OK);
     }
 
-    public ResponseEntity<Object> addOrUpdatePerson(Map<String, String> person) {
-        String id = person.get("id");
+    public ResponseEntity<Object> addPerson(Map<String, String> person) {
         String firstName = person.get("firstName");
         String lastName = person.get("lastName");
 
@@ -40,10 +39,30 @@ public class PersonService {
 
             return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
-        Person userName = new Person(firstName, lastName);
-        Person newPerson = repository.save(userName);
+        Person personEntity = new Person(firstName.trim(), lastName.trim());
+        Person newPerson = repository.save(personEntity);
 
         return new ResponseEntity<>(newPerson, new HttpHeaders(), HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<Object> updatePerson(Map<String, String> person) {
+        Long id = person.get("id") == null ? 0 : Long.valueOf(person.get("id"));
+        String firstName = person.get("firstName");
+        String lastName = person.get("lastName");
+        Optional<Person> personOptional = repository.findById(id);
+
+        if (firstName == null || lastName == null || !personOptional.isPresent()) {
+            Map<String, String> errorMessage = ErrorMessage.errorMessage(HttpStatus.BAD_REQUEST.value(),
+                    "Required parameters were not provided");
+
+            return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+        Person personEntity = personOptional.get();
+        personEntity.setFirstName(firstName.trim());
+        personEntity.setLastName(lastName.trim());
+        Person newPerson = repository.save(personEntity);
+
+        return new ResponseEntity<>(newPerson, new HttpHeaders(), HttpStatus.OK);
     }
 
 }
