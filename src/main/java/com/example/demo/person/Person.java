@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 @Entity
 public class Person {
-    private @Id @GeneratedValue Long id;
+    private @Id @GeneratedValue @Getter Long id;
     private @Getter @Setter String firstName;
     private @Getter @Setter String lastName;
 

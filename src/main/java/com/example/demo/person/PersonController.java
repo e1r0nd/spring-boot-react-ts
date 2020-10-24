@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,13 +38,22 @@ public class PersonController {
     private static final Logger logger = LoggerFactory.getLogger(PersonController.class);
 
     @GetMapping("/")
-    public ResponseEntity<List<Person>> getAllPersons(@RequestParam(defaultValue = "0") Integer pageNo,
+    public ResponseEntity<HashMap<String, Object>> getAllPersons(@RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "id") String sortBy) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
         Page<Person> pagedResult = repository.findAll(paging);
         List<Person> list = pagedResult.hasContent() ? pagedResult.getContent() : new ArrayList<>();
 
-        return new ResponseEntity<>(list, new HttpHeaders(), HttpStatus.OK);
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("pageNumber", pageNo);
+        result.put("pageSize", pageSize);
+        result.put("totalPages", pagedResult.getTotalPages());
+        result.put("hasPrevious", pagedResult.hasPrevious());
+        result.put("hasNext", pagedResult.hasNext());
+        result.put("sortBy", sortBy);
+        result.put("data", list);
+
+        return new ResponseEntity<>(result, new HttpHeaders(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
