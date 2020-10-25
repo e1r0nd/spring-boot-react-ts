@@ -71,7 +71,7 @@ public class PersonController {
         return result;
     }
 
-    @PostMapping(value = "/", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Object> createPerson(@RequestParam Map<String, String> person) {
         logger.info("Request for creation: {}", person);
 

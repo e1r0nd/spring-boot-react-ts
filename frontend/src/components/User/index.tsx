@@ -1,4 +1,4 @@
-import React, { Fragment, useState, SyntheticEvent } from "react";
+import React, { Fragment, useState, useEffect, SyntheticEvent } from "react";
 
 import { userUrl } from "./constants";
 import TableRow from "./TableRow";
@@ -6,43 +6,70 @@ import { UserInterface } from "./UserInterface";
 
 function User() {
   const [users, setUsers] = useState<UserInterface[] | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [hasPrevious, setHasPrevious] = useState(false);
+  const [hasNext, setHasNext] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-  async function getUserHandler() {
-    const response = await fetch(userUrl);
+  useEffect(() => {
+    if (!isDataLoaded) {
+      setIsDataLoaded(true);
+      getUserData();
+    }
+  });
+
+  async function getUserData() {
+    const fetchUrl = userUrl + (currentPage ? `?pageNo=${currentPage}` : "");
+
+    const response = await fetch(fetchUrl);
     if (response.status !== 200) {
       alert("Error fetching: " + response.statusText);
       return;
     }
     const responseData = await response.json();
-    setUsers(responseData.data);
+    setUsers(responseData.data.length && responseData.data);
     setCurrentPage(responseData.pageNo ?? 0);
     setTotalPages(responseData.totalPages ?? 0);
-    responseData.hasPrevious && setHasPrevious(true);
-    responseData.hasNext && setHasNext(true);
+    setHasPrevious(responseData.hasPrevious);
+    setHasNext(responseData.hasNext);
   }
 
   async function addUserHandler(e: SyntheticEvent) {
     e.preventDefault();
     const data = new FormData(document.forms[0] as HTMLFormElement);
 
-    const response = await fetch(userUrl, {
+    await fetch(userUrl, {
       method: "POST",
       body: data,
     });
-    getUserHandler();
+    setIsDataLoaded(false);
   }
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  const [hasPrevious, setHasPrevious] = useState(false);
-  const [hasNext, setHasNext] = useState(false);
-  function getPreviousPage() {}
-  function getNextPage() {}
+  function getPreviousPage() {
+    if (hasPrevious) {
+      setIsDataLoaded(false);
+      setCurrentPage(currentPage - 1);
+    }
+  }
+  function getNextPage() {
+    if (hasNext) {
+      setIsDataLoaded(false);
+      setCurrentPage(currentPage + 1);
+    }
+  }
+
+  async function deleteHandler(id: string) {
+    await fetch(`${userUrl}/${id}`, {
+      method: "DELETE",
+    });
+    setIsDataLoaded(false);
+  }
 
   return (
     <Fragment>
       <Fragment>
-        <button onClick={getUserHandler}>Fetch users</button>
+        <button onClick={getUserData}>Fetch users</button>
       </Fragment>
       <Fragment>
         <form action={userUrl} id="form">
@@ -71,6 +98,7 @@ function User() {
                 firstName={user.firstName}
                 lastName={user.lastName}
                 id={user.id}
+                deleteHandler={deleteHandler}
               />
             ))}
         </tbody>
@@ -78,7 +106,7 @@ function User() {
       <button onClick={getPreviousPage} disabled={!hasPrevious}>
         &lt;
       </button>
-      Page {currentPage} of {totalPages}
+      Page {currentPage + 1} of {totalPages}
       <button onClick={getNextPage} disabled={!hasNext}>
         &gt;
       </button>
