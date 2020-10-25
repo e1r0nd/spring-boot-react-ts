@@ -45,7 +45,7 @@ public class PersonController {
         List<Person> list = pagedResult.hasContent() ? pagedResult.getContent() : new ArrayList<>();
 
         HashMap<String, Object> result = new HashMap<>();
-        result.put("pageNumber", pageNo);
+        result.put("pageNo", pageNo);
         result.put("pageSize", pageSize);
         result.put("totalPages", pagedResult.getTotalPages());
         result.put("hasPrevious", pagedResult.hasPrevious());

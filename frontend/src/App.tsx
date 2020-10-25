@@ -14,12 +14,14 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
+      <header className="header">Spring + React example</header>
+      <div className="body">
         <div>{fetchedData}</div>
         <Joke dataHandler={fetchedDataHandler} />
         <Hello dataHandler={fetchedDataHandler} />
+        <hr />
         <User />
-      </header>
+      </div>
     </div>
   );
 }
