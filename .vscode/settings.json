@@ -6,7 +6,11 @@
     "**/.factorypath": true
   },
   "java.configuration.updateBuildConfiguration": "interactive",
-  "cSpell.words": ["Autowired"],
+  "cSpell.words": [
+    "Autowired",
+    "Configurer",
+    "sonarlint"
+  ],
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
