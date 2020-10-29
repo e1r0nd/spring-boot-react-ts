@@ -10,6 +10,13 @@ Spring Boot REST API based on Docker Postgres image with React (TypeScript) fron
 
 ## Local development
 
+### Credentials
+
+Predefined users
+
+- user : password
+- manager : password
+
 ### Start Backend
 
 ```bash

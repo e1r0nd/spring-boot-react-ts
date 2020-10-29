@@ -26,6 +26,7 @@ public class DatabaseLoader implements CommandLineRunner {
 	@Override
 	public void run(String... strings) throws Exception {
 
+		this.managers.save(new Manager("user", "password", "ROLE_USER"));
 		Manager manager = this.managers.save(new Manager("manager", "password", "ROLE_MANAGER"));
 
 		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("manager",

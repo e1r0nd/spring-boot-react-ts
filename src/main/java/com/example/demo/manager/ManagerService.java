@@ -5,6 +5,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,13 +19,11 @@ public class ManagerService implements UserDetailsService {
     }
 
     @Override
-    // public UserDetails loadUserByUsername(String name) throws
-    // UsernameNotFoundException { <- sonarlint(java:S1130)
-    // Remove the declaration of thrown exception
-    // 'org.springframework.security.core.userdetails.UsernameNotFoundException'
-    // which is a runtime exception.
     public UserDetails loadUserByUsername(String name) {
         Manager manager = this.repository.findByName(name);
+        if (manager == null) {
+            throw new UsernameNotFoundException("User not authorized.");
+        }
         return new User(manager.getName(), manager.getPassword(),
                 AuthorityUtils.createAuthorityList(manager.getRoles()));
     }

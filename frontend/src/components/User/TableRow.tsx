@@ -16,6 +16,7 @@ function TableRow(props: UserRowInterface) {
           onClick={() => {
             props.deleteHandler(props.id);
           }}
+          disabled={props.disabled}
         >
           Remove
         </button>

@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 
-import com.example.demo.utilities.HasRole;
-
 @RestController
 @RequestMapping("/api/account")
 public class AccountController {
@@ -21,7 +19,7 @@ public class AccountController {
     @GetMapping("/operations")
     public ResponseEntity<HashMap<String, Boolean>> getAvailableOperations() {
         HashMap<String, Boolean> result = new HashMap<>();
-        boolean isManager = HasRole.hasRole("ROLE_MANAGER");
+        boolean isManager = AccountHelper.hasRole("ROLE_MANAGER");
         result.put("hello", true);
         result.put("joke", true);
         result.put("secret", isManager);

@@ -25,6 +25,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import com.example.demo.account.AccountHelper;
+import com.example.demo.manager.Manager;
+import com.example.demo.utilities.ErrorMessage;
 
 @RestController
 @RequestMapping("/api/person")
@@ -45,6 +50,18 @@ public class PersonController {
         List<Person> list = pagedResult.hasContent() ? pagedResult.getContent() : new ArrayList<>();
 
         HashMap<String, Object> result = new HashMap<>();
+        List<Long> editable = new ArrayList<>();
+
+        for (Person person : list) {
+            Manager manager = person.getManager();
+            if (manager == null && AccountHelper.getName().equals("anonymousUser")) {
+                editable.add(person.getId());
+            }
+            if (manager != null && manager.getName().equals(AccountHelper.getName())) {
+                editable.add(person.getId());
+            }
+        }
+        result.put("editable", editable);
         result.put("pageNo", pageNo);
         result.put("pageSize", pageSize);
         result.put("totalPages", pagedResult.getTotalPages());
@@ -63,12 +80,27 @@ public class PersonController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deletePersonById(@PathVariable("id") Long id) {
-        ResponseEntity<Object> result = service.queryPersonById(id);
-        if (result.getStatusCode() == HttpStatus.OK) {
-            repository.deleteById(id);
-        }
+        Optional<Person> person = repository.findById(id);
+        if (person.isPresent()) {
+            Person personEntity = person.get();
+            Manager manager = personEntity.getManager();
 
-        return result;
+            if ((manager == null && AccountHelper.getName().equals("anonymousUser"))
+                    || (manager != null && manager.getName().equals(AccountHelper.getName()))) {
+                repository.deleteById(id);
+
+                return new ResponseEntity<>(personEntity, new HttpHeaders(), HttpStatus.OK);
+            } else {
+                Map<String, String> errorMessage = ErrorMessage.errorMessage(HttpStatus.NOT_FOUND.value(),
+                        String.format("Object protected with id: %d", id));
+
+                return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.FORBIDDEN);
+            }
+        }
+        Map<String, String> errorMessage = ErrorMessage.errorMessage(HttpStatus.NOT_FOUND.value(),
+                String.format("No object found with id: %d", id));
+
+        return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
 
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

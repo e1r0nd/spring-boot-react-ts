@@ -3,6 +3,7 @@ import React, { Fragment, useState, useEffect, SyntheticEvent } from "react";
 import { userUrl } from "./constants";
 import TableRow from "./TableRow";
 import { UserInterface } from "./UserInterface";
+import { getCookie } from "../../utils/getCookieByName";
 
 function User() {
   const [users, setUsers] = useState<UserInterface[] | null>(null);
@@ -17,7 +18,7 @@ function User() {
       setIsDataLoaded(true);
       getUserData();
     }
-  });
+  }, [isDataLoaded, getUserData]);
 
   async function getUserData() {
     const fetchUrl = userUrl + (currentPage ? `?pageNo=${currentPage}` : "");
@@ -28,7 +29,16 @@ function User() {
       return;
     }
     const responseData = await response.json();
-    setUsers(responseData.data.length && responseData.data);
+    if (responseData.data.length && responseData.data) {
+      const users = responseData.data;
+
+      responseData.data.forEach((person: UserInterface) => {
+        responseData.editable.includes(person.id)
+          ? (person.disabled = false)
+          : (person.disabled = true);
+      });
+      setUsers(users);
+    }
     setCurrentPage(responseData.pageNo ?? 0);
     setTotalPages(responseData.totalPages ?? 0);
     setHasPrevious(responseData.hasPrevious);
@@ -37,10 +47,16 @@ function User() {
 
   async function addUserHandler(e: SyntheticEvent) {
     e.preventDefault();
-    const data = new FormData(document.forms[0] as HTMLFormElement);
+    const data = new FormData(
+      document.querySelector("#addUser") as HTMLFormElement
+    );
+    const cookie = getCookie("XSRF-TOKEN") ?? "";
 
     await fetch(userUrl, {
       method: "POST",
+      headers: {
+        "X-XSRF-TOKEN": cookie,
+      },
       body: data,
     });
     setIsDataLoaded(false);
@@ -60,8 +76,13 @@ function User() {
   }
 
   async function deleteHandler(id: string) {
-    await fetch(`${userUrl}/${id}`, {
+    const cookie = getCookie("XSRF-TOKEN") ?? "";
+
+    await fetch(`${userUrl}${id}`, {
       method: "DELETE",
+      headers: {
+        "X-XSRF-TOKEN": cookie,
+      },
     });
     setIsDataLoaded(false);
   }
@@ -72,7 +93,7 @@ function User() {
         <button onClick={getUserData}>Fetch users</button>
       </Fragment>
       <Fragment>
-        <form action={userUrl} id="form">
+        <form action={userUrl} id="addUser">
           <input type="text" name="firstName" placeholder="first name" />
           <input type="text" name="lastName" placeholder="last name" />
           <button type="submit" onClick={addUserHandler}>
@@ -99,6 +120,7 @@ function User() {
                 lastName={user.lastName}
                 id={user.id}
                 deleteHandler={deleteHandler}
+                disabled={user.disabled}
               />
             ))}
         </tbody>

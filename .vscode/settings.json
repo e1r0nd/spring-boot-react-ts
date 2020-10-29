@@ -9,6 +9,10 @@
   "cSpell.words": [
     "Autowired",
     "Configurer",
+    "Csrf",
+    "JSESSIONID",
+    "Servlet",
+    "XSRF",
     "sonarlint"
   ],
   "[typescript]": {

@@ -3,6 +3,9 @@ package com.example.demo.person;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.demo.account.AccountHelper;
+import com.example.demo.manager.Manager;
+import com.example.demo.manager.ManagerRepository;
 import com.example.demo.utilities.ErrorMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,9 @@ public class PersonService {
 
     @Autowired
     PersonRepository repository;
+
+    @Autowired
+    ManagerRepository managerRepository;
 
     public ResponseEntity<Object> queryPersonById(Long id) {
         Optional<Person> person = repository.findById(id);
@@ -39,7 +45,14 @@ public class PersonService {
 
             return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
-        Person personEntity = new Person(firstName.trim(), lastName.trim());
+        String name = AccountHelper.getName();
+        Person personEntity;
+        if (name.equals("")) {
+            personEntity = new Person(firstName.trim(), lastName.trim());
+        } else {
+            Manager manager = this.managerRepository.findByName(name);
+            personEntity = new Person(firstName.trim(), lastName.trim(), manager);
+        }
         Person newPerson = repository.save(personEntity);
 
         return new ResponseEntity<>(newPerson, new HttpHeaders(), HttpStatus.CREATED);
