@@ -10,6 +10,10 @@ Spring Boot REST API based on Docker Postgres image with React (TypeScript) fron
 
 ## Local development
 
+### Preview
+
+https://spring-boot-react-ts.herokuapp.com/
+
 ### Credentials
 
 Predefined users

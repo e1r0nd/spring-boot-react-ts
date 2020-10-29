@@ -7,10 +7,12 @@
   },
   "java.configuration.updateBuildConfiguration": "interactive",
   "cSpell.words": [
+    "Adminer",
     "Autowired",
     "Configurer",
     "Csrf",
     "JSESSIONID",
+    "Postgres",
     "Servlet",
     "XSRF",
     "sonarlint"
