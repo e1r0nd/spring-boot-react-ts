@@ -25,9 +25,18 @@ public class DatabaseLoader implements CommandLineRunner {
 
 	@Override
 	public void run(String... strings) throws Exception {
+		Manager oldUser = this.managers.findByName("user");
+		if (oldUser == null) {
+			this.managers.save(new Manager("user", "password", "ROLE_USER"));
+		}
 
-		this.managers.save(new Manager("user", "password", "ROLE_USER"));
-		Manager manager = this.managers.save(new Manager("manager", "password", "ROLE_MANAGER"));
+		Manager oldManager = this.managers.findByName("manager");
+		Manager manager;
+		if (oldManager == null) {
+			manager = this.managers.save(new Manager("manager", "password", "ROLE_MANAGER"));
+		} else {
+			manager = oldManager;
+		}
 
 		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("manager",
 				"password", AuthorityUtils.createAuthorityList("ROLE_MANAGER")));
