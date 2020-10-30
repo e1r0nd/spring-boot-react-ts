@@ -89,7 +89,7 @@ public class PersonController {
                     || (manager != null && manager.getName().equals(AccountHelper.getName()))) {
                 repository.deleteById(id);
 
-                return new ResponseEntity<>(personEntity, new HttpHeaders(), HttpStatus.OK);
+                return new ResponseEntity<>(personEntity, new HttpHeaders(), HttpStatus.NO_CONTENT);
             } else {
                 Map<String, String> errorMessage = ErrorMessage.errorMessage(HttpStatus.NOT_FOUND.value(),
                         String.format("Object protected with id: %d", id));
